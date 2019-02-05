@@ -1,0 +1,36 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+
+<script type="text/javascript">
+
+    var Rx = window['rxjs'];
+    var Kc = window['kenticoCloudDelivery'];
+
+    console.log(Kc);
+    console.log(Rx);
+
+    var deliveryClient = new Kc.DeliveryClient({
+        projectId: 'da5abe9f-fdad-4168-97cd-b3464be2ccb9'
+    });
+
+    deliveryClient.items()
+        .type('movie')
+        .getObservable()
+        .pipe(
+            Rx.operators.map(function(response) {
+                console.log(response);
+                var dataElem = document.getElementById("data");
+                var html = "";
+                response.items.forEach(function(item) {
+                    html += "<div>" + item.title.text + "</div>";
+                });
+
+                dataElem.innerHTML = html;
+            })
+        )
+        .subscribe();
+</script>
